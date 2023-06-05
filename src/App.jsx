@@ -3,47 +3,73 @@ import { TVShowAPI } from "./api/tv-show";
 import "./global.css";
 import s from "./style.module.css";
 import { BACKDROP_BASE_URL } from "./config";
+import { TVShowDetail } from "./components/TVShowDetail/TVShowDetail";
+import { Logo } from "./components/Logo/Logo";
+import logo from "./assets/images/logo.png";
+import { TVShowList } from "./components/TVShowLIst/TVShowLIst";
 
-TVShowAPI.fetchPopulars();
+TVShowAPI.fetchRecommendation(1402);
 export function App() {
-    const [currentTVShow, setCurrentTVShow] = useState();
+  const [currentTVShow, setCurrentTVShow] = useState();
+  const [recommendationList, setRecommendationList] = useState([]);
 
-    async function fetchPopulars() {
-        const populars = await TVShowAPI.fetchPopulars();
-        if (populars.length > 0) {
-            setCurrentTVShow(populars[0]);
-        }
+  async function fetchPopulars() {
+    const populars = await TVShowAPI.fetchPopulars();
+    if (populars.length > 0) {
+      setCurrentTVShow(populars[0]);
     }
-    useEffect(() => {
-        fetchPopulars();
-    }, []);
+  }
+  async function fetchRecommendation(tvShowId) {
+    const recommendations = await TVShowAPI.fetchRecommendation(tvShowId);
+    if (recommendations.length > 0) {
+      setRecommendationList(recommendations.slice(0, 10));
+    }
+  }
 
-    console.log(currentTVShow);
-    return (
-        <div
-            className={s.main_container}
-            style={{
-                background: currentTVShow ? `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url("${BACKDROP_BASE_URL}${currentTVShow.backdrop_path}") no-repeat center / cover` : "black",
-            }}
-        >
-            <div className={s.header}>
-                <div className="row">
-                    <div className="col-4">
-                        <div>Logo</div>
-                        <div>Subtitle</div>
-                    </div>
-                    <div className="col-sm-12 col-md-4">
-                        <input
-                            style={{ width: "100%" }}
-                            type="text"
-                            name=""
-                            id=""
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className={s.tv_show_detail}>detail</div>
-            <div className={s.recommendations}>reco</div>
+  useEffect(() => {
+    fetchPopulars();
+  }, []);
+
+  useEffect(() => {
+    if (currentTVShow) {
+      fetchRecommendation(currentTVShow.id);
+    }
+  }, [currentTVShow]);
+
+
+  // function setCurrentTvShowFromRecommendation(tvShow) {
+  //   alert(JSON.stringify(tvShow));
+  // }
+
+  return (
+    <div
+      className={s.main_container}
+      style={{
+        background: currentTVShow
+          ? `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url("${BACKDROP_BASE_URL}${currentTVShow.backdrop_path}") no-repeat center / cover`
+          : "black",
+      }}
+    >
+      <div className={s.header}>
+        <div className="row">
+          <div className="col-4">
+            <Logo
+              image={logo}
+              title="Advise me"
+              subtitles="FInd a good show to watch"
+            />
+          </div>
+          <div className="col-sm-12 col-md-4">
+            <input style={{ width: "100%" }} type="text" name="" id="" />
+          </div>
         </div>
-    );
+      </div>
+      <div className={s.tv_show_detail}>
+        {currentTVShow && <TVShowDetail tvShow={currentTVShow} />}
+      </div>
+      <div className={s.recommendations}>
+        {recommendationList && <TVShowList onClickItem={setCurrentTVShow} tvShowList={recommendationList}/>}
+      </div>
+    </div>
+  );
 }
