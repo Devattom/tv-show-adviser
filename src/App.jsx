@@ -7,6 +7,7 @@ import { TVShowDetail } from "./components/TVShowDetail/TVShowDetail";
 import { Logo } from "./components/Logo/Logo";
 import logo from "./assets/images/logo.png";
 import { TVShowList } from "./components/TVShowLIst/TVShowLIst";
+import { SearchBar } from "./components/SearchBar/SearchBar";
 
 TVShowAPI.fetchRecommendation(1402);
 export function App() {
@@ -37,9 +38,13 @@ export function App() {
   }, [currentTVShow]);
 
 
-  // function setCurrentTvShowFromRecommendation(tvShow) {
-  //   alert(JSON.stringify(tvShow));
-  // }
+  async function searchTvShow(tvShowName) {
+    const searchResponse = await TVShowAPI.fetchByTitle(tvShowName);
+     console.log(searchResponse);
+     if(searchResponse.length > 0){
+        setCurrentTVShow(searchResponse[0]);
+     }
+  }
 
   return (
     <div
@@ -60,7 +65,7 @@ export function App() {
             />
           </div>
           <div className="col-sm-12 col-md-4">
-            <input style={{ width: "100%" }} type="text" name="" id="" />
+            <SearchBar onSubmit={searchTvShow}/>
           </div>
         </div>
       </div>

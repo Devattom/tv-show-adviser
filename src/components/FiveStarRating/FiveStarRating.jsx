@@ -12,10 +12,10 @@ export function FiveStarRating({rating}){
         starList.push(<StarFill key={"star-fill" + i}/>);
     }
     if(hasStarHalf){
-        starList.push(<StarHalf/>)
+        starList.push(<StarHalf key={"star-half"}/>)
     }
     for(let i=0; i<starEmpty; i++){
-        starList.push(<Star key={"star-empty" + i}/>)
+        starList.push(<Star key={"star-empty"+ i}/>)
     }
     return(
         <div className={s.starlist_container}>
