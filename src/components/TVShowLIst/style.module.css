@@ -8,6 +8,8 @@
     display: flex;
     overflow-x: hidden;
     padding-bottom: 30px;
+    scrollbar-color: transparent;
+    scrollbar-width: thin;
 }
 
 .list:hover{
